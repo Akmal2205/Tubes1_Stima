@@ -24,4 +24,4 @@ Algoritma tackle
 Algoritma Kembali ke base
 
 
-Algoritma hindari teleporter
+Algoritma hindari teleporter (kan bener, gw nemu kasus ketika teleporter bikin susah)

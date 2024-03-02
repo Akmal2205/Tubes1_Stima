@@ -1,4 +1,6 @@
 Algoritma hunting diamond
+-> consider juga jarak dengan teleporter
+
 -> Cari jarak tiap diamond dari lokasi bot
 -> Tentukan diamond/path masing masing diamond
 -> Cari lokasi diamond/path paling besar ada di mana
@@ -13,6 +15,8 @@ dependencies:
     -> nilai diamond
     -> lokasi diamond
     -> lokasi bot
+
+[GameObject(id=280, position=Position(y=10, x=2), type='DiamondGameObject', properties=Properties(points=2, pair_id=None, diamonds=None, score=None, name=None, inventory_size=None, can_tackle=None, milliseconds_left=None, time_joined=None, base=None))]
 
 Algoritma tackle
 

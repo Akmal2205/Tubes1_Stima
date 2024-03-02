@@ -5,6 +5,24 @@ from game.logic.base import BaseLogic
 from game.models import GameObject, Board, Position
 from ..util import get_direction
 
+def coordinate_diamond_ratio(coordinates, points, current_position):
+    sum_coordinates = [((point.x - current_position.x)**2 + (point.y-current_position.y)**2) for point in coordinates]
+    ratio = []
+
+    for i in range (len(sum_coordinates)):
+        if (sum_coordinates == 0):
+            ratio.append(-1)
+        else:
+            ratio.append(points[i]/sum_coordinates[i])
+    
+    return [coordinates, points], ratio
+
+def get_coordinate_goal_for_diamond(list_ratio, list_coordinates):
+    # cari index dari nilai max list ratio
+    max_ratio = max(list_ratio)
+    index = list_ratio.index(max_ratio)
+
+    return list_coordinates[index]
 
 class BotGacor(BaseLogic):
     def __init__(self):
@@ -14,6 +32,14 @@ class BotGacor(BaseLogic):
 
     def next_move(self, board_bot: GameObject, board: Board):
         props = board_bot.properties
+        current_position = board_bot.position
+        print(current_position.x, current_position.y)
+        coordinate_and_point, ratio = coordinate_diamond_ratio([coordinate.position for coordinate in board.diamonds], [coordinate.properties.points for coordinate in board.diamonds], current_position)
+        print(ratio)
+        print(coordinate_and_point)
+        goal = get_coordinate_goal_for_diamond(ratio, coordinate_and_point[0])
+        print(goal.x, goal.y)
+
         # Analyze new state
         if props.diamonds == 5:
             # Move to base
@@ -21,10 +47,8 @@ class BotGacor(BaseLogic):
             self.goal_position = base
         else:
             # Just roam around
-            self.goal_position = None
+            self.goal_position = goal
 
-        current_position = board_bot.position
-        print(current_position.x, current_position.y)
         if self.goal_position:
             # We are aiming for a specific position, calculate delta
             delta_x, delta_y = get_direction(
@@ -44,4 +68,4 @@ class BotGacor(BaseLogic):
                 )
         
         print (delta_x, delta_y)
-        return 0, 1
+        return delta_x, delta_y

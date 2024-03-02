@@ -3,9 +3,21 @@ Algoritma hunting diamond
 -> Tentukan diamond/path masing masing diamond
 -> Cari lokasi diamond/path paling besar ada di mana
 -> Jadikan itu sebagai goals sementara
--> 
+-> tentukan pergerakan bot: 
+        Studi kasus:
+        -> misal koordinat awal (0,0) tujuan (4,7)
+        -> cari selisih x atau y yang terpanjang, jika sama pilih x atau y (untuk memudahkan pilih x)
+        -> 
+-> ulangi langkah awal
+dependencies:
+    -> nilai diamond
+    -> lokasi diamond
+    -> lokasi bot
 
 Algoritma tackle
 
 
 Algoritma Kembali ke base
+
+
+Algoritma hindari teleporter

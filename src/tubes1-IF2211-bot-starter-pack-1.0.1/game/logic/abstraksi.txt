@@ -1,0 +1,11 @@
+Algoritma hunting diamond
+-> Cari jarak tiap diamond dari lokasi bot
+-> Tentukan diamond/path masing masing diamond
+-> Cari lokasi diamond/path paling besar ada di mana
+-> Jadikan itu sebagai goals sementara
+-> 
+
+Algoritma tackle
+
+
+Algoritma Kembali ke base

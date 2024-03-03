@@ -19,7 +19,19 @@ dependencies:
 [GameObject(id=280, position=Position(y=10, x=2), type='DiamondGameObject', properties=Properties(points=2, pair_id=None, diamonds=None, score=None, name=None, inventory_size=None, can_tackle=None, milliseconds_left=None, time_joined=None, base=None))]
 
 Algoritma tackle
-
+->cek apabila dalam radius 2 block pada diagonal :
+    [ e|  | e]
+    [  | b|  ]
+    [ e|  | e]
+    -> e = enemy bot
+    -> b = bot kita
+    -> jika ada bot dalam radius 2 block, maka bot akan kita delay sekian milidetik untuk memeriksa inventory dari bot tersebut
+    -> if diamond bot musuh =< diamond kita => pergi ; else => bot di delay sekian detik menunggu apabila bot musuh berada di depan kita dan kita tackle
+    -> apabila setelah sekian detik tersebut bot tidak maju, maka pergi Algoritma diamond hunting
+dependencies:
+    -> lokasi bot musuh
+    -> lokasi diamond
+    -> informasi inventory diamond bot musuh
 
 Algoritma Kembali ke base
 

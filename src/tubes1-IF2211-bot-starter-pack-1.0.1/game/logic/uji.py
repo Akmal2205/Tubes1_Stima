@@ -55,20 +55,25 @@ def avoid_teleport(goal_position, current_position, delta_x, delta_y):
             return 0,-1
 
 def get_dir(current_position, dest):
-    gap_x = dest.x - current_position.x
-    gap_y = dest.y - current_position.y
+    gap_x = abs(dest.x - current_position.x)
+    gap_y = abs(dest.y - current_position.y)
 
-    if abs(gap_x) >= abs(gap_y): # gerak sumbu x
-        return (1 if gap_x >= 0 else -1, 0)
+    if gap_x >= gap_y : # gerak sumbu x
+        if(dest.x - current_position.x >= 0): #dest ada di sebelah kanan
+            return(1,0)
+        else: #dest ada di sebelah kiri
+            return(-1,0)
     else: #gerak sumbu y
-        return (0, 1 if gap_y >= 0 else -1)
+        if(dest.y - current_position.y >= 0): #dest ada di sebelah bawah
+            return(0,1)
+        else: #dest ada di sebelah atas
+            return(0,-1)
 
-class BotGacor(BaseLogic):
+class Uji(BaseLogic):
     def __init__(self):
         self.directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
         self.goal_position: Optional[Position] = None
         self.current_direction = 0
-        self.avoid = False
 
     def next_move(self, board_bot: GameObject, board: Board):
         # inisiasi
@@ -99,19 +104,13 @@ class BotGacor(BaseLogic):
 
 
         # We are aiming for a specific position, calculate delta
-
-        if(self.avoid):
-            delta_x, delta_y = get_dir(current_position, self.goal_position) # enhanced
-            self.avoid = False
-        else:
-            delta_x, delta_y = get_direction( current_position.x, current_position.y, self.goal_position.x, self.goal_position.y) # menuju path algo awal
-
+        delta_x, delta_y = get_direction( current_position.x, current_position.y, self.goal_position.x, self.goal_position.y) # menuju path algo awal
+        # delta_x, delta_y = get_dir(current_position, self.goal_position) # enhanced
 
         # implementasi hindari teleport button
         for tel in teleport_location:
             if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
                 delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
-                self.avoid = True
 
             
 

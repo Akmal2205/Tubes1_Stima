@@ -7,6 +7,7 @@ from game.board_handler import BoardHandler
 from game.bot_handler import BotHandler
 from game.logic.random import RandomLogic
 from game.logic.botgacor import BotGacor
+from game.logic.uji import Uji
 from game.util import *
 from game.logic.base import BaseLogic
 
@@ -16,6 +17,7 @@ DEFAULT_BOARD_ID = 1
 CONTROLLERS = {
     "Random": RandomLogic,
     "Gacor" : BotGacor,
+    "Default" : Uji,
 }
 
 ###############################################################################

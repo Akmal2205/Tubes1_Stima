@@ -42,14 +42,14 @@ def avoid_teleport(goal_position, current_position, delta_x, delta_y):
     if(delta_x == 0): #pergerakan vertikal
         # berarti bisa digeser kanan atau kiri, tergantung posisi relatif goal terhadap tujuan
         selisih_x = goal_position.x - current_position.x # kalo positif artinya goal ada di sebelah kanan, kita geser ke kanan aja. kalaupun selisihnya nol, kita bebas mau ambil kanan atau kiri
-        if(selisih_x>=0):
+        if(selisih_x>=0 and current_position.x != 14):
             return 1, 0
         else:
             return -1,0
     else: # artinya delta_x bergerak ke kanan atau ke kiri, yang mana nilai delta_y pasti 0
         # berarti bisa digeser atas atau bawah, tergantung posisi relatif goal terhadap tujuan
         selisih_y = goal_position.y - current_position.y # kalo positif artinya goal ada di sebelah bawah, kita geser ke bawah aja. kalaupun selisihnya nol, kita bebas mau ambil atas atau bawah
-        if(selisih_y>=0):
+        if(selisih_y>=0) and current_position.y != 14:
             return 0, 1
         else:
             return 0,-1
@@ -63,6 +63,7 @@ def get_dir(current_position, dest):
     else: #gerak sumbu y
         return (0, 1 if gap_y >= 0 else -1)
 
+            
 class BotGacor(BaseLogic):
     def __init__(self):
         self.directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
@@ -72,18 +73,24 @@ class BotGacor(BaseLogic):
 
     def next_move(self, board_bot: GameObject, board: Board):
         # inisiasi
-        props = board_bot.properties
         current_position = board_bot.position
+        props = board_bot.properties
+        if(board_bot.properties.diamonds>=1):
+            enemy_location = [(bot.position, bot.properties.name, bot.properties.diamonds) for bot in board.bots if bot.position.x!=current_position.x and bot.position.y!=current_position.y and ((bot.position.x - current_position.x)**2 + (bot.position.y-current_position.y)**2 <=2)]
+        else:
+            enemy_location = [(bot.position, bot.properties.name, bot.properties.diamonds) for bot in board.bots if bot.position.x!=current_position.x and bot.position.y!=current_position.y and ((bot.position.x - current_position.x)**2 + (bot.position.y-current_position.y)**2 <=2) and bot.properties.diamonds>=2]
+
+        print(enemy_location)
+        if(len(enemy_location)>0):
+            x, y = get_direction(current_position.x, current_position.y, enemy_location[0][0].x, enemy_location[0][0].y)
+            return x, y
+        
         teleport_location = [object.position for object in board.game_objects if object.type == "TeleportGameObject"]
+        print(current_position.x, current_position.y)
         coordinate_and_point, ratio = coordinate_diamond_ratio([coordinate.position for coordinate in board.diamonds], [coordinate.properties.points for coordinate in board.diamonds], current_position)
         goal, is_base = get_coordinate_goal_for_diamond(ratio, coordinate_and_point[0], props.diamonds, coordinate_and_point[1])
         
         print(teleport_location)
-        # print(current_position.x, current_position.y)
-        # print(ratio)
-        # print(coordinate_and_point)
-        # print(props.diamonds)
-        # print(goal.x, goal.y)
 
         # Analyze new state
         base = board_bot.properties.base
@@ -91,12 +98,11 @@ class BotGacor(BaseLogic):
             # Move to base
             self.goal_position = base
         else:
-            # Just roam around
-            if(not is_base):
-                self.goal_position = goal
-            else:
+            if(is_base):
                 self.goal_position = base
-
+            # Just roam around
+            else:
+                self.goal_position = goal
 
         # We are aiming for a specific position, calculate delta
 
@@ -112,7 +118,5 @@ class BotGacor(BaseLogic):
             if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
                 delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
                 self.avoid = True
-
-            
 
         return delta_x, delta_y

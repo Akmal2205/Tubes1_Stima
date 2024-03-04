@@ -17,7 +17,7 @@ DEFAULT_BOARD_ID = 1
 CONTROLLERS = {
     "Random": RandomLogic,
     "Gacor" : BotGacor,
-    "Default" : Uji,
+    "Default" : Uji
 }
 
 ###############################################################################
@@ -207,7 +207,7 @@ while True:
 
     # Don't spam the board more than it allows!
     # sleep(move_delay * time_factor)
-    sleep(move_delay*time_factor)
+    sleep(1)
 
 
 ###############################################################################

@@ -19,9 +19,44 @@ dependencies:
 [GameObject(id=280, position=Position(y=10, x=2), type='DiamondGameObject', properties=Properties(points=2, pair_id=None, diamonds=None, score=None, name=None, inventory_size=None, can_tackle=None, milliseconds_left=None, time_joined=None, base=None))]
 
 Algoritma tackle
+->cek apabila dalam radius 2 block pada diagonal :
+    [ e|  | e]
+    [  | b|  ]
+    [ e|  | e]
+    -> e = enemy bot
+    -> b = bot kita
+    -> jika ada bot dalam radius 2 block, maka bot akan kita delay sekian milidetik untuk memeriksa inventory dari bot tersebut
+    -> if diamond bot musuh =< diamond kita => pergi ; else => bot di delay sekian detik menunggu apabila bot musuh berada di depan kita dan kita tackle
+    -> apabila setelah sekian detik tersebut bot tidak maju, maka pergi Algoritma diamond hunting
+    -> perlukah mempertimbangkan kecepatan bot lawan untuk menentukan waktu delay?
+    -> kecepatan ~ score/time, 3/5 ~ 1/time
 
+    langkah:
+    -> 
+dependencies:
+    -> lokasi bot musuh
+    -> lokasi diamond
+    -> informasi inventory diamond bot musuh
 
 Algoritma Kembali ke base
 
 
 Algoritma hindari teleporter (kan bener, gw nemu kasus ketika teleporter bikin susah)
+
+
+# numpang nyimpen
+def bot_scan(enemy_location, current_position):
+    dist = [((enemy.x - current_position.x)**2 + (enemy.y-current_position.y)**2) for enemy in enemy_location]
+    
+    for i in dist:
+        if i<=4 and i>0:
+            return True
+        else:
+            return False
+
+def att_bot(current_position, enemy_location):
+    if(bot_scan(enemy_location,current_position)):
+        if(2>(enemy_location.x - current_position.x)**2 + (enemy_location.y-current_position.y)**2):#enemy location berada di diagonal dan berjarak 1 petak
+            return True
+        else:
+            return False

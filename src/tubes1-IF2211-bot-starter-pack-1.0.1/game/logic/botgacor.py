@@ -35,10 +35,10 @@ def bot_scan(enemy_location, current_position):
 
 def att_bot(current_position, enemy_location):
     if(bot_scan(enemy_location,current_position)):
-        if((enemy_location.x - current_position.x)**2 + (enemy_location.y-current_position.y)**2)==1:
-            return True#current location diarahkan ke enemy location
+        if(2>(enemy_location.x - current_position.x)**2 + (enemy_location.y-current_position.y)**2):#enemy location berada di diagonal dan berjarak 1 petak
+            return True
         else:
-            return False#sleep, sekian detik menunggu
+            return False
             
 class BotGacor(BaseLogic):
     def __init__(self):
@@ -63,7 +63,7 @@ class BotGacor(BaseLogic):
             base = board_bot.properties.base
             self.goal_position = base
         else:
-            if (att_bot(current_position, enemy_location)):#menyerang
+            if (att_bot(current_position, enemy_location) and (enemy_location.x - current_position.x)**2 + (enemy_location.y-current_position.y)**2 == 1):#menyerang jika persis didepan bot
                 self.goal_position = enemy_location
             else:#defense mechanism (kabur)
                 self.goal_position = goal

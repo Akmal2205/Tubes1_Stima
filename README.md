@@ -26,11 +26,9 @@
      ./scripts/setup-db-prisma.bat
      ```
   Build dan start :
-  
      ```
      npm run build
      ```
-     
      ```
      npm run start
      ```

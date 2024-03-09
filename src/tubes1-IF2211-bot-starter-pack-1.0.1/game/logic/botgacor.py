@@ -54,6 +54,12 @@ def teleport_use(diamond_pos, diamond_ratio, teleport2_pos, points):
     else:
         return False
 
+def teleport_use_base(curr_pos, tel2_pos, base):
+    if((base.x-tel2_pos.x)**2+(base.y-tel2_pos.y)**2>(base.x-curr_pos.x)**2+(base.y-curr_pos.y)**2):
+        return True
+    else:
+        return False
+
 
 
 def avoid_teleport(goal_position, current_position, delta_x, delta_y):
@@ -142,19 +148,30 @@ class BotGacor(BaseLogic):
         if(self.teleport==False and props.diamonds<4):
             for tel in teleport_location:           
                 if((tel.x-current_position.x)**2+(tel.y-current_position.y)**2 <2):
-                    if(teleport_use(diamond_pos_in_game, ratio, (teleport_location[0] if position_equals(teleport_location[1], tel) else teleport_location[1]), diamond_point_in_game) and self.goal_position!=base):
-                        delta_x, delta_y = get_direction(current_position.x, current_position.y, tel.x, tel.y)
-                        self.teleport = True
-                        print(1)
-                        break
+                    if(self.goal_position != base):
+                        if(teleport_use(diamond_pos_in_game, ratio, (teleport_location[0] if position_equals(teleport_location[1], tel) else teleport_location[1]), diamond_point_in_game)):
+                            delta_x, delta_y = get_direction(current_position.x, current_position.y, tel.x, tel.y)
+                            self.teleport = True
+                            print(1)
+                        else:
+                            if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
+                                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
+                                self.avoid = True
+                                print(2)
                     else:
-                        if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
-                            delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
-                            self.avoid = True
-                            print(2)
+                        if(teleport_use_base(current_position, (teleport_location[0] if position_equals(teleport_location[1], tel) else teleport_location[1]), base)):
+                            delta_x, delta_y = get_direction(current_position.x, current_position.y, tel.x, tel.y)
+                            self.teleport = True
+                        else:
+                            if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
+                                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
+                                self.avoid = True
+                                print(2)
+                    break
             print(3)
         else:
             self.teleport= False
 
 
         return delta_x, delta_y
+    

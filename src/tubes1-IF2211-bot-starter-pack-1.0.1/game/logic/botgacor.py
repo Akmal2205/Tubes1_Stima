@@ -177,7 +177,7 @@ class BotGacor(BaseLogic):
                             # Jika tidak akan menggunakan teleport maka lanjut aja
                             if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
                                 # tapi jika langkah selanjutnya adalah teleport maka hindari dan set status menghindari teleport menjadi true
-                                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
+                                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x)
                                 self.avoid = True
                                 
                     else:
@@ -190,7 +190,7 @@ class BotGacor(BaseLogic):
                             # Jika tidak akan menggunakan teleport maka lanjut aja
                             if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
                                 # tapi jika langkah selanjutnya adalah teleport maka hindari dan set status menghindari teleport menjadi true
-                                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
+                                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x)
                                 self.avoid = True
                     # break agar jika telah menemukan posisi teleport terdekat, kita tidak akan mengecek teleport yang jauhnya            
                     break

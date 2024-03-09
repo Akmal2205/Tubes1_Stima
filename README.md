@@ -9,16 +9,19 @@
      npm install --global yarn
      ```
   Instalasi konfigurasi awal :
-  1. Masuk ke folder /src
-  2. Install dependencies menggunakan Yarn
+  1. Masuk ke folder src
+  2. Download source code (.zip) pada [release game engine] https://github.com/haziqam/tubes1-IF2211-game-engine/releases/tag/v1.1.0
+  3. Buka zip di dalam folder src
+  4. Masuk ke directory dari game-engine
+  6. Install dependencies menggunakan Yarn
      ```
      yarn
      ```
-  3. Setup default environment variable dengan menjalankan script berikut untuk Windows
+  7. Setup default environment variable dengan menjalankan script berikut untuk Windows
      ```
      ./scripts/copy-env.bat
      ```
-  4. Setup local database (buka aplikasi docker desktop terlebih dahulu, lalu jalankan command berikut di terminal)
+  8. Setup local database (buka aplikasi docker desktop terlebih dahulu, lalu jalankan command berikut di terminal)
      ```
      docker compose up -d database
      ```
@@ -34,7 +37,16 @@
      ```
 
 ## 3. Program Compiling
-
+  1. Masuk ke directory src
+  2. Untuk menjalankan satu bot dengan logic bot kita
+     ```
+     python main.py --logic Gacor --email=your_email@example.com --name=your_name --password=your_password --team etimo
+     ```
+  3. Untuk menjalankan beberapa bot sekaligus
+     ```
+     ./run-bots.bat
+     ```
+  4. Konfigurasi bot ada pada file run-bots.bat
 ## 4. Authors
 1. Ibrahim Ihsan Rasyid - 13522018
 2. Muhamad Rifki Virziadeili Harisman - 13522120

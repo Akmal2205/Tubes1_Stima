@@ -3,7 +3,7 @@ from typing import Optional
 
 from game.logic.base import BaseLogic
 from game.models import GameObject, Board, Position
-from ..util import get_direction
+from ..util import get_direction, position_equals
 
 def coordinate_diamond_ratio(coordinates, points, current_position):
     sum_coordinates = [((coordinate.x - current_position.x)**2 + (coordinate.y-current_position.y)**2) for coordinate in coordinates]
@@ -40,7 +40,7 @@ def get_coordinate_goal_for_diamond(list_ratio, list_coordinates, inventory_diam
 def red_button(red_pos, curr_pos, diamond_ratio, n_diamond_left):
     distance = ((red_pos.x-curr_pos.x)**2+(red_pos.y-curr_pos.y)**2)
     poin = (2/(distance*n_diamond_left))
-    print("ini point red:", poin)
+    # print("ini point red:", poin)
     if (poin>= max(diamond_ratio)):
         return True
     else:
@@ -48,7 +48,7 @@ def red_button(red_pos, curr_pos, diamond_ratio, n_diamond_left):
     
 def teleport_use(diamond_pos, diamond_ratio, teleport2_pos, points):
     _, ratio_teleport = coordinate_diamond_ratio(diamond_pos, points, teleport2_pos)
-    
+    # print("ratio", ratio_teleport, diamond_ratio)
     if(max(ratio_teleport)>max(diamond_ratio)):
         return True
     else:
@@ -89,6 +89,7 @@ class BotGacor(BaseLogic):
         self.goal_position: Optional[Position] = None
         self.current_direction = 0
         self.avoid = False
+        self.teleport = False
 
     def next_move(self, board_bot: GameObject, board: Board):
         # inisiasi
@@ -106,7 +107,7 @@ class BotGacor(BaseLogic):
             return x, y
         
         teleport_location = [object.position for object in board.game_objects if object.type == "TeleportGameObject"]
-        print(current_position.x, current_position.y)
+        # print(current_position.x, current_position.y)
         diamond_pos_in_game = [coordinate.position for coordinate in board.diamonds]
         diamond_point_in_game = [coordinate.properties.points for coordinate in board.diamonds]
         coordinate_and_point, ratio = coordinate_diamond_ratio(diamond_pos_in_game, diamond_point_in_game, current_position)
@@ -114,7 +115,7 @@ class BotGacor(BaseLogic):
         if(red_button(red_pos[0], current_position, ratio, len(diamond_point_in_game))):
             goal = red_pos[0]
         
-        print(teleport_location)
+        # print(teleport_location)
 
         # Analyze new state
         base = board_bot.properties.base
@@ -138,15 +139,22 @@ class BotGacor(BaseLogic):
 
 
         # implementasi hindari teleport button
-        for tel in teleport_location:
-             
-            if((tel.x-current_position.x)**2+(tel.y-current_position.y)**2 <=2):
-                if(teleport_use(diamond_pos_in_game, ratio, (teleport_location[0] if teleport_location[0] == tel else teleport_location[1]), diamond_point_in_game)):
-                    delta_x, delta_y = get_direction(current_position.x, current_position.y, tel.x, tel.y)
-                else:
-                    delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
-                    self.avoid = True
+        if(self.teleport==False and props.diamonds<4):
+            for tel in teleport_location:           
+                if((tel.x-current_position.x)**2+(tel.y-current_position.y)**2 <2):
+                    if(teleport_use(diamond_pos_in_game, ratio, (teleport_location[0] if position_equals(teleport_location[1], tel) else teleport_location[1]), diamond_point_in_game) and self.goal_position!=base):
+                        delta_x, delta_y = get_direction(current_position.x, current_position.y, tel.x, tel.y)
+                        self.teleport = True
+                        print(1)
+                        break
+                    else:
+                        if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
+                            delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
+                            self.avoid = True
+                            print(2)
+            print(3)
+        else:
+            self.teleport= False
 
-            # if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
 
         return delta_x, delta_y

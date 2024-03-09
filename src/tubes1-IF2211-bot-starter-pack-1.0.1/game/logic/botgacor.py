@@ -37,6 +37,25 @@ def get_coordinate_goal_for_diamond(list_ratio, list_coordinates, inventory_diam
 
     return list_coordinates[index], False
 
+def red_button(red_pos, curr_pos, diamond_ratio, n_diamond_left):
+    distance = ((red_pos.x-curr_pos.x)**2+(red_pos.y-curr_pos.y)**2)
+    poin = (2/(distance*n_diamond_left))
+    print("ini point red:", poin)
+    if (poin>= max(diamond_ratio)):
+        return True
+    else:
+        return False
+    
+def teleport_use(diamond_pos, diamond_ratio, teleport2_pos, points):
+    _, ratio_teleport = coordinate_diamond_ratio(diamond_pos, points, teleport2_pos)
+    
+    if(max(ratio_teleport)>max(diamond_ratio)):
+        return True
+    else:
+        return False
+
+
+
 def avoid_teleport(goal_position, current_position, delta_x, delta_y):
     # (0,0) itu kotak paling kiri atas
     if(delta_x == 0): #pergerakan vertikal
@@ -80,15 +99,20 @@ class BotGacor(BaseLogic):
         else:
             enemy_location = [(bot.position, bot.properties.name, bot.properties.diamonds) for bot in board.bots if bot.position.x!=current_position.x and bot.position.y!=current_position.y and ((bot.position.x - current_position.x)**2 + (bot.position.y-current_position.y)**2 <=2) and bot.properties.diamonds>=2]
 
-        print(enemy_location)
+        red_pos = [obj.position for obj in board.game_objects if obj.type == "DiamondButtonGameObject"]
+
         if(len(enemy_location)>0):
             x, y = get_direction(current_position.x, current_position.y, enemy_location[0][0].x, enemy_location[0][0].y)
             return x, y
         
         teleport_location = [object.position for object in board.game_objects if object.type == "TeleportGameObject"]
         print(current_position.x, current_position.y)
-        coordinate_and_point, ratio = coordinate_diamond_ratio([coordinate.position for coordinate in board.diamonds], [coordinate.properties.points for coordinate in board.diamonds], current_position)
+        diamond_pos_in_game = [coordinate.position for coordinate in board.diamonds]
+        diamond_point_in_game = [coordinate.properties.points for coordinate in board.diamonds]
+        coordinate_and_point, ratio = coordinate_diamond_ratio(diamond_pos_in_game, diamond_point_in_game, current_position)
         goal, is_base = get_coordinate_goal_for_diamond(ratio, coordinate_and_point[0], props.diamonds, coordinate_and_point[1])
+        if(red_button(red_pos[0], current_position, ratio, len(diamond_point_in_game))):
+            goal = red_pos[0]
         
         print(teleport_location)
 
@@ -115,8 +139,14 @@ class BotGacor(BaseLogic):
 
         # implementasi hindari teleport button
         for tel in teleport_location:
-            if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
-                delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
-                self.avoid = True
+             
+            if((tel.x-current_position.x)**2+(tel.y-current_position.y)**2 <=2):
+                if(teleport_use(diamond_pos_in_game, ratio, (teleport_location[0] if teleport_location[0] == tel else teleport_location[1]), diamond_point_in_game)):
+                    delta_x, delta_y = get_direction(current_position.x, current_position.y, tel.x, tel.y)
+                else:
+                    delta_x, delta_y = avoid_teleport(self.goal_position, current_position, delta_x, delta_y)
+                    self.avoid = True
+
+            # if((delta_x + current_position.x) == tel.x and (delta_y + current_position.y) == tel.y):
 
         return delta_x, delta_y

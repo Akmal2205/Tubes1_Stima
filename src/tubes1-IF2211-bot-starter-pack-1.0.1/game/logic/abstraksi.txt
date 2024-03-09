@@ -41,7 +41,12 @@ dependencies:
 Algoritma Kembali ke base
 
 
-Algoritma hindari teleporter (kan bener, gw nemu kasus ketika teleporter bikin susah)
+Algoritma hindari teleporter (kan bener, gw nemu kasus ketika teleporter bikin susah):
+alternative-> kita bandingkan antara langkah menuju diamond tanpa dan dengan teleporter
+
+
+Algoritma redbutton
+ketika jarak terdekat dari diamond > dari jarak redbutton -> pilih redbutton
 
 
 # numpang nyimpen
